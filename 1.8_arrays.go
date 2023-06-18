@@ -70,3 +70,19 @@ func arrays() {
 	colors := [3]string{2: "blue", 0: "red", 1: "green"}
 	fmt.Println(colors[2])
 }
+
+/*
+Двумерные массивы
+
+var m = [3][3]int{
+		{3, 4, 1},
+		{5, 1},
+	}
+
+	for _, row := range m {
+		for _, val := range row {
+			fmt.Printf("%d ", val)
+		}
+		fmt.Println()
+	}
+*/
