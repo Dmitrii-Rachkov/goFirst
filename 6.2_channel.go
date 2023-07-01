@@ -276,3 +276,406 @@ func createChan(n int) chan int{
 На стороне писателя мы закрываем канал, а на стороне читателя проверям открыт ли канал,
 чтобы не возникало panic.
 */
+
+/*
+Взаимная блокировка канала
+
+Deadlock (Взаимная блокировка)
+
+Как уже ранее говорилось, чтение или запись данных в канал блокирует горутину и контроль передается
+свободной горутине. Представим, что такие горутины отсутствуют, либо они все "спят".
+В этот момент возникает deadlock, который приведет к аварийному завершению программы.
+
+Если вы попытаетесь считать данные из канала, но в канале будут отсутствовать данные, планировщик
+заблокирует текущую горутину и разблокирует другую в надежде, что какая-либо горутина передаст данные
+в канал. То же самое произойдет в случае отправки данных: планировщик заблокирует передающую горутину,
+пока другая не считает данные из канала.
+Примером deadlock может быть main горутина, которая эксклюзивно производит операции с каналом.
+
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("main() started")
+
+    c := make(chan string)
+    c <- "John"
+
+    fmt.Println("main() stopped")
+}
+
+Программа выше выведет следующее при попытке ее исполнить:
+
+main() started
+fatal error: all goroutines are asleep - deadlock!
+goroutine 1 [chan send]:
+main.main()
+        program.go:10 +0xfd
+exit status 2
+*/
+
+/*
+Закрытие канала
+
+В Go так же можно закрыть канал, через закрытый канал невозможно будет передать или принять данные.
+Горутина может проверить закрыт канал или нет, используя следующую конструкцию: val, ok := <- channel,
+где ok будет истиной в случае, если канал открыт или операция чтения может быть выполнена,
+иначе ok будет false, если канал закрыт и отсутствуют данных для чтения из него.
+Закрыть канал можно, используя встроенную функцию close, используя следующий синтаксис close(channel).
+Давайте рассмотрим следующий пример:
+
+package main
+
+import "fmt"
+
+func greet(c chan string) {
+    <-c // for John
+    <-c // for Mike
+}
+
+func main() {
+    fmt.Println("main() started")
+
+    c := make(chan string, 1)
+
+    go greet(c)
+    c <- "John"
+
+    close(c) // closing channel
+
+    c <- "Mike"
+    fmt.Println("main() stopped")
+}
+
+Для понимания концепта блокировки первая операция отправки c <- "John" будет блокирующей, и другая
+горутина должна будет считать данные из канала, следовательно greet горутина будет запланирована
+планировщиком. Затем первая операция чтения будет неблокируемой, поскольку присутствуют данные для
+чтения в канале c. Вторая операция чтения будет блокируемой, потому что в канале c отсутствуют данные,
+поэтому планировщик переключится на main горутину и программа выполнит закрытие канала close(c).
+
+Вывод программы:
+
+main() started
+panic: send on closed channel
+
+goroutine 1 [running]:
+main.main()
+    program.go:20 +0x120
+exit status 2
+
+Как вы можете заметить, программа завершилась с ошибкой, которая говорит, что запись в закрытый
+канал невозможна. Для дальнейшего понимания закрытия каналов давайте рассмотрим пример с циклом for.
+*/
+
+/*
+Пример с циклом for
+
+package main
+
+import "fmt"
+
+func squares(c chan int) {
+    for i := 0; i <= 9; i++ {
+        c <- i * i
+    }
+
+    close(c) // close channel
+}
+
+func main() {
+    fmt.Println("main() started")
+    c := make(chan int)
+
+    go squares(c) // start goroutine
+
+    // periodic block/unblock of main goroutine until chanel closes
+    for {
+        val, ok := <-c
+        if ok == false {
+            fmt.Println(val, ok, "<-- loop broke!")
+            break // exit break loop
+        } else {
+            fmt.Println(val, ok)
+        }
+    }
+
+    fmt.Println("main() stopped")
+}
+
+Бесконечный цикл может быть полезен для чтения данных из канала, когда мы не знаем сколько данных
+мы ожидаем. В этом примере мы создаем горутину squares, которая последовательно возвращает квадраты
+чисел от 0 до 9. В main мы считываем эти числа внутри цикла for.
+
+В цикле мы считываем данные из канала, используя ранее рассмотренный синтаксис val, ok := <-c,
+где ok предоставляет нам информацию о том, что канал закрыт. В горутине squares после того, как
+записали все данные, мы закрываем канал, используя функцию close. Когда ok будет true, программа
+выведет значение val и статус канала (переменная ok). Когда ok станет false, мы завершим цикл,
+используя ключевое слово break. Таким образом мы получим следующий результат:
+
+main() started
+0 true
+1 true
+4 true
+9 true
+16 true
+25 true
+36 true
+49 true
+64 true
+81 true
+0 false <-- loop broke!
+main() stopped
+
+Когда канал закрыт, значение val, считанное горутиной, является нулевым значением, в зависимости
+от типа данных канала. Так как в нашем случае тип данных канала int, то нулевое значение будет 0,
+как раз это мы и видим в этой строке: 0 false <-- loop broke!
+
+
+Для того, чтобы избежать столь громоздкой проверки закрытия канала в случае цикла for,
+Go предоставляет ключевое слово range, которое автоматически останавливает цикл, когда
+канал будет закрыт. Давайте перепишем нашу программу с использованием range:
+
+package main
+
+import "fmt"
+
+func squares(c chan int) {
+    for i := 0; i <= 9; i++ {
+        c <- i * i
+    }
+
+    close(c) // close channel
+}
+
+func main() {
+    fmt.Println("main() started")
+    c := make(chan int)
+
+    go squares(c) // start goroutine
+
+    // periodic block/unblock of main goroutine until chanel closes
+    for val := range c {
+        fmt.Println(val)
+    }
+
+    fmt.Println("main() stopped")
+}
+
+В этом примере мы использовали val := range c вместо бесконечного цикла, где range будет считывать
+данные из канала до тех пор, пока канал не будет закрыт. В результате программа выведет следующее:
+
+main() started
+0
+1
+4
+9
+16
+25
+36
+49
+64
+81
+main() stopped
+
+Если вы не закроете канал для цикла for с использованием range, то программа будет завершена
+аварийно из-за dealock во время выполнения.
+*/
+
+/*
+select
+
+select похож на switch без аргументов, но он может использоваться только для операций с каналами.
+Оператор select используется для выполнения операции только с одним из множества каналов, условно
+выбранного блоком case.
+Давай взглянем на пример ниже, и обсудим как он работает:
+
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+var start time.Time
+func init() {
+    start = time.Now()
+}
+
+func service1(c chan string) {
+    time.Sleep(3 * time.Second)
+    c <- "Hello from service 1"
+}
+
+func service2(c chan string) {
+    time.Sleep(5 * time.Second)
+    c <- "Hello from service 2"
+}
+
+func main() {
+    fmt.Println("main() started", time.Since(start))
+
+    chan1 := make(chan string)
+    chan2 := make(chan string)
+
+    go service1(chan1)
+    go service2(chan2)
+
+    select {
+    case res := <-chan1:
+        fmt.Println("Response from service 1", res, time.Since(start))
+    case res := <-chan2:
+        fmt.Println("Response from service 2", res, time.Since(start))
+    }
+
+    fmt.Println("main() stopped", time.Since(start))
+}
+
+В этом примере мы используем оператор select как switch, но вместо булевых операций, мы используем
+операции для чтения данных из канала. Оператор select также является блокируемым, за исключением
+использования default(позже вы увидите пример с его использованием). После выполнения одного из
+блоков case, горутина main будет разблокирована. Задались вопросом когда case условие выполнится?
+
+Если все блоки case являются блокируемыми, тогда select будет ждать до момента, пока один из блоков
+case разблокируется и будет выполнен. Если несколько или все канальные операции не блокируемы,
+тогда один из неблокируемых case будет выбран случайным образом (Примечание переводчика:
+имеется ввиду случай, когда пришли одновременно данные из двух и более каналов).
+
+Давайте наконец разберем программу, которую написали ранее. Мы запустили 2 горутины с независимыми
+каналами. Затем мы использовали оператор select c двумя case операторами. Один case считывает данные
+из chan1 а другой из chan2. Так как каналы не используют буфер, операция чтения будет блокируемой.
+Таким образом оба case будут блокируемыми и select будет ждать до тех пор, пока один из case не
+разблокируется.
+
+Когда программа находится в блоке select горутина main будет заблокирована и будут запланированы все
+горутины (по одной за раз), которые используются в блоке select, в нашем случае это service1 и service2
+. service1 ждет 3 секунды, после чего будет разблокирован и сможет записать данные в chan1.
+Таким же образом как и service1 действует service2, только он ожидает 5 секунд и осуществляет запись
+в chan2. Так как service1 разблокируется раньше, чем service2, первый case разблокируется раньше и
+произведет чтение из chan1, а второй case будет проигнорирован. После чего управление вернется в main,
+и программа завершится после вывода в консоль.
+
+Вывод программы:
+
+main() started 0s
+Response from service 1 Hello from service 1 3s
+main() stopped 3s
+
+Вышеприведенная программа имитирует реальный веб-сервис, в котором балансировщик нагрузки получает
+миллионы запросов и должен возвращать ответ от одной из доступных служб. Используя стандартные
+горутины, каналы и select, мы можем запросить ответ у нескольких сервисов, и тот, который ответит
+раньше всех, может быть использован.
+
+Для того, чтобы симулировать случай, когда все блоки case разблокируются в одно и тоже время,
+мы может просто удалить вызов Sleep из горутин.
+
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+var start time.Time
+func init() {
+    start = time.Now()
+}
+
+func service1(c chan string) {
+    c <- "Hello from service 1"
+}
+
+func service2(c chan string) {
+    c <- "Hello from service 2"
+}
+
+func main() {
+    fmt.Println("main() started", time.Since(start))
+
+    chan1 := make(chan string)
+    chan2 := make(chan string)
+
+    go service1(chan1)
+    go service2(chan2)
+
+    select {
+    case res := <-chan1:
+        fmt.Println("Response from service 1", res, time.Since(start))
+    case res := <-chan2:
+        fmt.Println("Response from service 2", res, time.Since(start))
+    }
+
+    fmt.Println("main() stopped", time.Since(start))
+}
+
+Данная программа выводит следующий результат:
+
+main() started 0s
+service2() started 481µs
+Response from service 2 Hello from service 2 981.1µs
+main() stopped 981.1µs
+
+Но иногда вы можете получить следующий результат:
+
+main() started 0s
+service1() started 484.8µs
+Response from service 1 Hello from service 1 984µs
+main() stopped 984µs
+
+Это происходит потому, что операции chan1 и chan2 выполняются практически одновременно,
+но все же существует некоторая разница во времени при исполнении и планировании горутин.
+
+Для того, чтобы сделать все блоки case неблокируемыми, мы можем использовать каналы с буфером.
+
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+var start time.Time
+
+func init() {
+    start = time.Now()
+}
+
+func main() {
+    fmt.Println("main() started", time.Since(start))
+    chan1 := make(chan string, 2)
+    chan2 := make(chan string, 2)
+
+    chan1 <- "Value 1"
+    chan1 <- "Value 2"
+    chan2 <- "Value 1"
+    chan2 <- "Value 2"
+
+    select {
+    case res := <-chan1:
+        fmt.Println("Response from chan1", res, time.Since(start))
+    case res := <-chan2:
+        fmt.Println("Response from chan2", res, time.Since(start))
+    }
+
+    fmt.Println("main() stopped", time.Since(start))
+}
+
+Вывод может быть следующим:
+
+main() started 0s
+Response from chan2 Value 1 0s
+main() stopped 1.0012ms
+
+Или таким:
+
+main() started 0s
+Response from chan1 Value 1 0s
+main() stopped 1.0012ms
+
+В приведенной программе оба канала имеют буфер размером 2. Так как мы отправляем 2 значения в буфер,
+горутина не будет заблокирована и программа перейдет в блок select. Чтение из буферизированного канала
+не является блокируемой операцией, если буфер не пустой, поэтому все блоки case будут неблокируемыми,
+и во время выполнения Go выберет case случайным образом.
+
+
+*/
