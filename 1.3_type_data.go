@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 //Целочисленные типы:
 
@@ -130,5 +133,39 @@ import "fmt"
 func typeData() {
 	var number int = 1500 // целое число
 	fmt.Println(number)
+}
 
+func typeConversion() {
+	fmt.Println("Преобразуем типы данных")
+	// Строка в десятичное число (10) с точностью (64) разрядная система
+	a, err := strconv.ParseInt("66", 10, 64)
+	fmt.Println(a, err)
+
+	// Строка в int по умолчанию в int64 без указанию доп параметров
+	b, err := strconv.Atoi("99")
+	fmt.Println(b, err)
+
+	// Сканируем строку и записываем в переменную c int
+	var c int
+	_, err = fmt.Sscanf("77", "%d", &c)
+	fmt.Println(c)
+
+	// Преобразуем строку в float с указанием разрядности
+	d, err := strconv.ParseFloat("33.1", 64)
+	fmt.Println(d, err)
+
+	// Числа в строки по умолчанию в int 64
+	s1 := strconv.Itoa(42)
+	fmt.Println(s1)
+
+	// Числа в строки с параметров системы исчесления (10)
+	s2 := strconv.FormatInt(123, 10)
+	fmt.Println(s2)
+
+	s3 := fmt.Sprintf("%d", 77)
+	fmt.Println(s3)
+
+	// Преобразование float в string с указанием разрадя (2 знака после запятой) и точности(64)
+	s4 := strconv.FormatFloat(0.1, 'f', 2, 64)
+	fmt.Println(s4)
 }

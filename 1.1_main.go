@@ -34,6 +34,7 @@ func main() {
 	fmt.Println("Hello go")
 	variables1()                 // переменные
 	typeData()                   // типы данных
+	typeConversion()             // преобразование типов данных
 	constantEx()                 // константы
 	arithmeticOperations()       // арифметические операции
 	relation()                   // условные операторы
