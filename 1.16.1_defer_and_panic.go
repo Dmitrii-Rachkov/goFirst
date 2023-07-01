@@ -58,36 +58,3 @@ func divide(x, y float64) float64 {
 не будут выполняться.
 И в конце вывода будет идти диагностическая информация о том, где возникла ошибка.
 */
-
-/*
-Обработка ошибок
-
-package main
-
-import (
-	"errors"
-	"fmt"
-	"log"
-	"os"
-)
-// При объявлении функции мы указываем, что она возвращает значение типа string
-// и может вернуть error - ошибку:
-// Если переменная a == 43 то возвращаем 'ok' и пустоту
-// Иначе возвращаем пустую строку и новую ошибку с текстом 'some error
-func foo(a int) (string, error) {
-	if a == 42 {
-		return "ok", nil
-	}
-	return "", errors.New("some error")
-}
-
-func main() {
-	s, err := foo(42)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
-
-	fmt.Println(s)
-}
-*/
