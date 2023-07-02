@@ -186,4 +186,28 @@ fmt.Println(nums) // [1 2 3 4 5 6]
 то есть от многих факторов. Для большинства стандартных случаев используется sort.Slice, пока
 производительность или нестабильность алгоритма не станет "узким горлышком".
 
+Задание
+Реализуйте функцию UniqueSortedUserIDs(userIDs []int64) []int64, которая возвращает отсортированный
+слайс, состоящий из уникальных идентификаторов userIDs. Обработка должна происходить in-place,
+то есть без выделения доп. памяти.
+
+package solution
+import "sort"
+
+// UniqueSortedUserIDs sorts and removes duplicates from the userIDs slice.
+func UniqueSortedUserIDs(userIDs []int64) []int64 {
+	if len(userIDs) < 2 {
+		return userIDs
+	}
+
+	sort.SliceStable(userIDs, func(i, j int) bool { return userIDs[i] < userIDs[j] })
+	uniqPointer := 0
+	for i := 1; i < len(userIDs); i++ {
+		if userIDs[uniqPointer] != userIDs[i] {
+			uniqPointer++
+			userIDs[uniqPointer] = userIDs[i]
+		}
+	}
+	return userIDs[:uniqPointer+1]
+}
 */
