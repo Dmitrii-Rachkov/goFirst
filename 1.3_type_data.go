@@ -169,3 +169,48 @@ func typeConversion() {
 	s4 := strconv.FormatFloat(0.1, 'f', 2, 64)
 	fmt.Println(s4)
 }
+
+/*
+Преобразование строк
+Для работы со строками часто используется стандартная библиотека strings.
+
+// обрезает символы, переданные вторым аргументом, с обеих сторон строки
+Trim(s, cutset string) string
+// пример
+strings.Trim(" hello ", " ") // "hello"
+
+// преобразует все буквы в строке в нижний регистр
+strings.ToLower(s string) string
+// пример
+strings.ToLower("пРиВеТ") // "привет"
+
+// озаглавливает первую букву в каждом слове в строке
+strings.Title(s string) string
+// пример
+strings.Title("привет, джон") // "Привет, Джон"
+
+// функция проверяет, что строка name начинается с подстроки "Mr."
+strings.HasPrefix(name, "Mr.")
+
+// Для замены символов в строке существует функция
+ReplaceAll(s, old, new string) string из пакета strings:
+strings.ReplaceAll("hello world!", "world!", "buddy!") // hello buddy!
+
+или пример:
+
+// ModifySpaces modifies string s depending on mode.
+func ModifySpaces(s, mode string) string {
+	var replacement string
+
+	switch mode {
+	case "dash":
+		replacement = "-"
+	case "underscore":
+		replacement = "_"
+	default:
+		replacement = "*"
+	}
+
+	return strings.ReplaceAll(s, " ", replacement)
+}
+*/
