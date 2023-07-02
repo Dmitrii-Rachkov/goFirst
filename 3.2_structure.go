@@ -109,3 +109,72 @@ type Foo struct {        // сама структура с большой бук
 	X := 4              // доступно в других пакетах
 }
 */
+
+/*
+У любого поля структуры можно указать теги. Они используются для метаинформации о поле для сериализации,
+валидации, маппинга данных из БД и тд. Тег указывается после типа данных через бектики:
+type User struct {
+    ID int64 `json:"id" validate:"required"`
+    Email string `json:"email" validate:"required,email"`
+    FirstName string `json:"first_name" validate:"required"`
+}
+
+Тег json используется для названий полей при сериализации/десериализации структуры в json и обратно:
+
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+)
+
+type User struct {
+    ID        int64  `json:"id"`
+    Email     string `json:"email"`
+    FirstName string `json:"first_name"`
+}
+
+func main() {
+    u := User{}
+    u.ID = 22
+    u.Email = "test@test.com"
+    u.FirstName = "John"
+
+    bs, _ := json.Marshal(u)
+
+    fmt.Println(string(bs)) // {"id":22,"email":"test@test.com","first_name":"John"}
+}
+
+Тег validate используется Go-валидатором. В следующем примере присутствует вызов функции у структуры
+v.Struct(u). Функции структур — методы — мы разберем подробно в соответствующем уроке, а пока
+просто посмотрите, как происходит вызов:
+
+package main
+
+import (
+    "fmt"
+    "github.com/go-playground/validator/v10"
+)
+
+type User struct {
+    ID        int64  `validate:"required"`
+    Email     string `validate:"required,email"`
+    FirstName string `validate:"required"`
+}
+
+func main() {
+    // создали пустую структуру, чтобы проверить валидацию
+    u := User{}
+
+    // создаем валидатор
+    v := validator.New()
+
+    // метод Struct валидирует переданную структуру и возвращает ошибку `error`, если какое-то поле некорректно
+    fmt.Println(v.Struct(u))
+}
+Вывод программы:
+
+Key: 'User.ID' Error:Field validation for 'ID' failed on the 'required' tag
+Key: 'User.Email' Error:Field validation for 'Email' failed on the 'required' tag
+Key: 'User.FirstName' Error:Field validation for 'FirstName' failed on the 'required' tag
+*/
