@@ -73,3 +73,23 @@ func constantEx() {
 	)
 	fmt.Println(a, b, c, d, f)
 }
+
+/*
+Для последовательных числовых констант следует использовать идентификатор iota, который присвоит
+для списка чисел значения от 0:
+
+package main
+
+import "fmt"
+
+const (
+    zero = iota
+    one
+    two
+    three
+)
+
+func main() {
+    fmt.Println(zero, one, two, three) // 0 1 2 3
+}
+*/
