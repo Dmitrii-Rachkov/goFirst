@@ -213,4 +213,7 @@ func ModifySpaces(s, mode string) string {
 
 	return strings.ReplaceAll(s, " ", replacement)
 }
+
+// Наличие пробелов можно проверить с помощью функции
+strings.Contains(firstName, " ").
 */
