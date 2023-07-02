@@ -216,4 +216,16 @@ func ModifySpaces(s, mode string) string {
 
 // Наличие пробелов можно проверить с помощью функции
 strings.Contains(firstName, " ").
+
+// проверяет наличие подстроки в строке
+strings.Contains("hello", "h") // true
+
+// разбивает строку по Юникод символам или по переданному разделителю
+strings.Split("hello", "") // ["h", "e", "l", "l", "o"]
+
+// склеивает строки из слайса с разделителем
+strings.Join([]string{"hello","world!"}, " ") // "hello world!"
+
+// обрезает символы из второго аргумента в строке
+strings.Trim(" hey !", " ") // "hey !"
 */
