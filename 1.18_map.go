@@ -77,3 +77,61 @@ func mapOne() {
 	delete(people, "Bob")
 	fmt.Println(people)
 }
+
+/*
+Проверка наличия элментов в map:
+
+При чтении элемента по несуществующему ключу возвращается нулевое значение данного типа.
+Это приводит к ошибкам логики, когда используется bool как значение. Для решения данной проблемы при
+чтении используется вторая переменная, в которую записывается наличие элемента в мапе:
+
+existedIDs := map[int64]bool{1: true, 2: true}
+idExists, elementExists := existedIDs[2] // true, true
+idExists, elementExists := existedIDs[225] // false, false
+*/
+
+/*
+Мапы в Go всегда передаются по ссылке:
+
+package main
+import (
+    "fmt"
+)
+
+func main() {
+    m := map[int]string{1: "hello", 2: "world"}
+    modifyMap(m)
+    fmt.Println(m) // вывод: map[1:changed 2:world 200:added]
+}
+
+func modifyMap(m map[int]string) {
+    m[200] = "added"
+    m[1] = "changed"
+}
+*/
+
+/*
+Задание
+Реализуйте функцию UniqueUserIDs(userIDs []int64) []int64, которая возвращает слайс,
+состоящий из уникальных идентификаторов userIDs. Порядок слайса должен сохраниться.
+
+package solution
+
+// UniqueUserIDs removes duplicates from the userIDs slice saving the IDs order.
+func UniqueUserIDs(userIDs []int64) []int64 {
+	// пустая структура struct{} — это тип данных, который занимает 0 байт
+	// используется, когда нужно проверять в мапе только наличие ключа
+	processed := make(map[int64]struct{})
+
+	uniqUserIDs := make([]int64, 0)
+	for _, uid := range userIDs {
+		if _, ok := processed[uid]; ok {
+			continue
+		}
+
+		uniqUserIDs = append(uniqUserIDs, uid)
+		processed[uid] = struct{}{}
+	}
+	return uniqUserIDs
+}
+*/
