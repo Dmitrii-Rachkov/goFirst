@@ -1,14 +1,14 @@
-package main
-
-import (
-	"context"
-	"fmt"
-	"io"
-	"log"
-	"math/rand"
-	"net/http"
-	"time"
-)
+//package main
+//
+//import (
+//	"context"
+//	"fmt"
+//	"io"
+//	"log"
+//	"math/rand"
+//	"net/http"
+//	"time"
+//)
 
 /*
 Что такое контекст?
@@ -55,50 +55,50 @@ context.WithTimeout()
 ответа от API, в запрос можно передать контекст:
 */
 
-ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
-defer cancel()
+//ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
+//defer cancel()
 
-req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://example.com", nil)
-if err != nil {
-return nil, fmt.Errorf("failed to create request with ctx: %w", err)
-}
+//req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://example.com", nil)
+//if err != nil {
+//return nil, fmt.Errorf("failed to create request with ctx: %w", err)
+//}
 
-res, err := http.DefaultClient.Do(req)
-if err != nil {
-return nil, fmt.Errorf("failed to perform http request: %w", err)
-}
-
-return res, nil
-
-// Давайте разбираться, что здесь написано.
-
-ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
-defer cancel()
+//res, err := http.DefaultClient.Do(req)
+//if err != nil {
+//return nil, fmt.Errorf("failed to perform http request: %w", err)
+//}
+//
+//return res, nil
+//
+//// Давайте разбираться, что здесь написано.
+//
+//ctx, cancel := context.WithTimeout(context.Background(), 15 * time.Second)
+//defer cancel()
 
 /*
 Первым делом происходит инициализация контекста с таймаутом в 15 секунд. Конструкция defer cancel() гарантирует,
 что после выхода из функции или горутины контекст будёт отменён, и таким образом вы избежите утекания
 горутины — явления, когда горутина продолжает выполняться и существовать в памяти, но результат её работы
 больше никого не интересует.
- */
+*/
 
 /*
 В следующем блоке ничего особенного, создаётся объект *http.Request, куда встраивается созданный нами контекст:
 */
 
-req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://example.com", nil)
-if err != nil {
-return nil, fmt.Errorf("failed to create request with ctx: %w", err)
-}
+//req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://example.com", nil)
+//if err != nil {
+//return nil, fmt.Errorf("failed to create request with ctx: %w", err)
+//}
 
 /*
 Ну, и непосредственно исполнение запроса:
 */
 
-res, err := http.DefaultClient.Do(req)
-if err != nil {
-return nil, fmt.Errorf("failed to perform http request: %w", err)
-}
+//res, err := http.DefaultClient.Do(req)
+//if err != nil {
+//return nil, fmt.Errorf("failed to perform http request: %w", err)
+//}
 
 /*
 Дерево контекстов
@@ -116,67 +116,75 @@ return nil, fmt.Errorf("failed to perform http request: %w", err)
 гарантию (с некоторым оговорками), что контекст с дедлайном отменится не позже данного дедлайна.
 Кроме того, это даёт возможность дополнять родительский контекст и передавать дальше по цепочке новый контекст,
 обогащённый новыми данными.
- */
+*/
 
 /*
 Для наглядности рассмотрим ещё один пример. Если мы запустим программу ниже, мы увидим: несмотря на то,
 что внутри функции doWork таймаут переопределяется на больший, отмена контекста все равно наступит
 через 10 секунд:
- */
+*/
 
-package main
+//package main
+//
+//import (
+//"context"
+//	"fmt"
+//	"io"
+//	"log"
+//	"math/rand"
+//	"net/http"
+//	"time"
+//)
 
-import (
-"context"
-"log"
-"time"
-)
+//func main() {
+//	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+//	defer cancel()
+//
+//	doWork(ctx)
+//}
 
-func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	doWork(ctx)
-}
-
-func doWork(ctx context.Context) {
-	newCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
-	defer cancel()
-
-	log.Println("starting working...")
-
-	for {
-		select {
-		case <-newCtx.Done():
-			log.Printf("ctx done: %v", ctx.Err())
-			return
-		default:
-			log.Println("working...")
-			time.Sleep(1 * time.Second)
-		}
-	}
-}
+//func doWork(ctx context.Context) {
+//	newCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+//	defer cancel()
+//
+//	log.Println("starting working...")
+//
+//	for {
+//		select {
+//		case <-newCtx.Done():
+//			log.Printf("ctx done: %v", ctx.Err())
+//			return
+//		default:
+//			log.Println("working...")
+//			time.Sleep(1 * time.Second)
+//		}
+//	}
+//}
 
 /*
 context.WithDeadline()
 Контекст с таймаутом по сути является удобной обёрткой над контекстом с дедлайном.
 Программу из предыдущего примера можно выразить немного по-другому:
- */
+*/
 
 package main
 
 import (
-"context"
-"log"
-"time"
+	"context"
+	"fmt"
+	"io"
+	"log"
+	"math/rand"
+	"net/http"
+	"time"
 )
 
-func main() {
-	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(10*time.Second))
-	defer cancel()
-
-	doWork(ctx)
-}
+//func main() {
+//	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(10*time.Second))
+//	defer cancel()
+//
+//	doWork(ctx)
+//}
 
 func doWork(ctx context.Context) {
 	newCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
@@ -195,10 +203,11 @@ func doWork(ctx context.Context) {
 		}
 	}
 }
+
 /*
 time.Now().Add(10*time.Second) — это ровно то, что делает функция context.WithTimeout(), вызывая внутри себя
 context.WithDeadline().
- */
+*/
 
 /*
 context.WithCancel()
@@ -210,45 +219,45 @@ context.WithCancel()
 Давайте представим, как описанная ситуация могла бы выглядеть в виде кода:
 */
 
-package main
-
-import (
-"context"
-"log"
-"math/rand"
-"sync"
-"time"
-)
-
-func main() {
-	var (
-		resultCh    = make(chan string)
-		ctx, cancel = context.WithCancel(context.Background())
-		services    = []string{"Super", "Villagemobil", "Sett Taxi", "Index Go"}
-		wg          sync.WaitGroup
-		winner      string
-	)
-
-	defer cancel()
-
-	for i := range services {
-		svc := services[i]
-
-		wg.Add(1)
-		go func() {
-			requestRide(ctx, svc, resultCh)
-			wg.Done()
-		}()
-	}
-
-	go func() {
-		winner = <-resultCh
-		cancel()
-	}()
-
-	wg.Wait()
-	log.Printf("found car in %q", winner)
-}
+//package main
+//
+//import (
+//"context"
+//"log"
+//"math/rand"
+//"sync"
+//"time"
+//)
+//
+//func main() {
+//	var (
+//		resultCh    = make(chan string)
+//		ctx, cancel = context.WithCancel(context.Background())
+//		services    = []string{"Super", "Villagemobil", "Sett Taxi", "Index Go"}
+//		wg          sync.WaitGroup
+//		winner      string
+//	)
+//
+//	defer cancel()
+//
+//	for i := range services {
+//		svc := services[i]
+//
+//		wg.Add(1)
+//		go func() {
+//			requestRide(ctx, svc, resultCh)
+//			wg.Done()
+//		}()
+//	}
+//
+//	go func() {
+//		winner = <-resultCh
+//		cancel()
+//	}()
+//
+//	wg.Wait()
+//	log.Printf("found car in %q", winner)
+//}
 
 func requestRide(ctx context.Context, serviceName string, resultCh chan string) {
 	time.Sleep(3 * time.Second)
@@ -273,25 +282,25 @@ func requestRide(ctx context.Context, serviceName string, resultCh chan string) 
 context.WithValue()
 Окей, а что насчёт передачи значений через контекст? Для этого в пакете существует функция WithValue.
 Давайте взглянем, как это работает:
- */
-package main
-
-import (
-"context"
-"log"
-)
-
-func main() {
-	ctx := context.WithValue(context.Background(), "name", "Joe")
-
-	log.Printf("name = %v", ctx.Value("name"))
-	log.Printf("age = %v", ctx.Value("age"))
-}
+*/
+//package main
+//
+//import (
+//"context"
+//"log"
+//)
+//
+//func main() {
+//	ctx := context.WithValue(context.Background(), "name", "Joe")
+//
+//	log.Printf("name = %v", ctx.Value("name"))
+//	log.Printf("age = %v", ctx.Value("age"))
+//}
 
 /*
 Обратите внимание, что метод Value возвращает значение типа interface{}, поэтому скорее всего вам будет
 необходимо привести его к нужному типу. Кроме того, если ключ не представлен в контексте, метод вернёт nil.
- */
+*/
 
 /*
 Когда стоит передавать данные через контекст?
@@ -299,7 +308,7 @@ func main() {
 неявный контракт между компонентами вашего приложения, к тому же ещё и ненадёжный. Исключение составляют случаи,
 когда вам нужно предоставить компоненту из внешней библиотеку вашу реализацию интерфейса, который вы не можете
 менять. Например, middleware в HTTP сервере.
- */
+*/
 
 /*
 Пример. HTTP Middleware
@@ -310,16 +319,16 @@ func main() {
 с ошибкой аутентификации. Это и есть пример классического middleware.
 
 Вот как это может выглядеть:
- */
-package main
-
-import (
-"context"
-"fmt"
-"io"
-"log"
-"net/http"
-)
+*/
+//package main
+//
+//import (
+//"context"
+//"fmt"
+//"io"
+//"log"
+//"net/http"
+//)
 
 type ctxKey string
 
@@ -371,7 +380,7 @@ func handleRestricted() http.Handler {
 то лучше всё-таки добавить контекст. Это не усложнит вам жизнь, но потенциально упростит её в будущем.
 Особенно это касается объявляемых вами интерфейсов — внутри реализации может происходить всё что угодно,
 в том числе сетевые вызовы и долгие операции.
- */
+*/
 
 /*
 Советы и лучшие практики
@@ -402,4 +411,4 @@ context.Background должен использоваться только как
 https://pkg.go.dev/context
 https://go.dev/blog/context
 https://gobyexample.com/context
- */
+*/

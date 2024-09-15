@@ -93,3 +93,41 @@ func main() {
     fmt.Println(zero, one, two, three) // 0 1 2 3
 }
 */
+
+/*
+Можно использовать пустой идентификатор, чтобы пропустить значение в списке констант.
+const (
+    C1 = iota + 1
+    _
+    C3
+    C4
+)
+fmt.Println(C1, C3, C4) // "1 3 4"
+*/
+
+/*
+Интересный пример
+const (
+		a    = iota       // a = 0
+		_    = iota       // _ = 1
+		b, c = iota, iota // b = 2, c = 2
+	)
+	fmt.Println(a, b, c)
+*/
+
+/*
+Ещё пример
+type ByteSize float64
+
+const (
+    _           = iota // ignore first value by assigning to blank identifier
+    KB ByteSize = 1 << (10 * iota)
+    MB
+    GB
+    TB
+    PB
+    EB
+    ZB
+    YB
+)
+*/
