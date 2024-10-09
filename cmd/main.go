@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Замыкание
 func main() {
 
 	myTimer := getTimer()
