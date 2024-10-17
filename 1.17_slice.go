@@ -11,7 +11,7 @@ import "fmt"
 */
 func oneSlice() {
 	fmt.Println("Работа среза")
-	var users []string = []string{"Tom", "Alice", "Kate"}
+	var users = []string{"Tom", "Alice", "Kate"}
 	fmt.Println(users[2])
 	users[2] = "Katherine"
 	fmt.Println(users[2])
@@ -29,7 +29,7 @@ func oneSlice() {
 */
 func makeSlice() {
 	fmt.Println("Функция make в срезах")
-	var users []int = make([]int, 3)
+	var users = make([]int, 3)
 	for index, value := range users {
 		fmt.Println(index, value)
 	}
@@ -211,3 +211,27 @@ func UniqueSortedUserIDs(userIDs []int64) []int64 {
 	return userIDs[:uniqPointer+1]
 }
 */
+
+// Конвертация slice в указатель на массив, при этом длина массива должна быть равна длине slice
+func convertToArrayPointer() {
+	initialSlice := []int{1, 2}
+	fmt.Printf("Type: %T Value: %#v\n", initialSlice, initialSlice)
+	fmt.Printf("Length: %d Capacity: %d\n\n", len(initialSlice), cap(initialSlice))
+
+	intArray := (*[2]int)(initialSlice)
+	fmt.Printf("Type: %T Value: %#v\n", intArray, intArray)
+	fmt.Printf("Length: %d Capacity: %d\n\n", len(intArray), cap(intArray))
+}
+
+// Создание slice через функцию new
+// Так мы получаем указатель на slice
+func sliceWithNew() {
+	slicePointer := new([]int)
+
+	fmt.Printf("Type: %T Value: %#v\n", slicePointer, *slicePointer)
+	fmt.Printf("Length: %d Capacity: %d\n\n", len(*slicePointer), cap(*slicePointer))
+
+	newSlice2 := append(*slicePointer, 1)
+	fmt.Printf("Type: %T Value: %#v\n", newSlice2, newSlice2)
+	fmt.Printf("Length: %d Capacity: %d\n\n", len(newSlice2), cap(newSlice2))
+}
