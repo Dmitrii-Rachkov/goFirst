@@ -152,3 +152,38 @@ add([]int{1, 2, 3, 4}...)
 var nums = []int{5, 6, 7, 2, 3}
 add(nums...)
 */
+
+/*
+Callback
+
+Предназначена для изменения бизнес-логики, изменение поведения метода
+из клиентского кода
+
+// Функция принимает на вход callback
+func doSomething(callback func(int, int), s string) int {
+	// ...
+	result := callback(5, 1)
+	fmt.Println(s)
+	return result
+}
+
+// Клиентский код в main
+
+func main() {
+	// Определяем функцию callback как сумму чисел
+	sumCallback := func(x, y int) int {
+		return x + y
+	}
+
+	result := doSomething(sumCallback, "plus")
+	fmt.Println(result)
+
+	// Определяем функцию callback как произведение чисел
+	multiCallback := func(x, y int) int {
+		return x + y
+	}
+
+	result := doSomething(multiCallback, "multi")
+		fmt.Println(result)
+}
+*/

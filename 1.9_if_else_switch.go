@@ -109,12 +109,55 @@ func switchDefault() {
 если ни один из операторов case не содержит нужного значения:
 */
 
+// Switch с инициализацией переменной
 func switchMany() {
-	d := 5
-	switch d {
+	switch d := 5; d {
 	case 9:
 		fmt.Println("d = 9")
 	case 6, 5, 4:
 		fmt.Println("Тройной кейс")
 	}
 }
+
+// Switch с fallthrough, который говорит, что нужно сделать следующий case
+func switchFallthrough() {
+	switch d := 5; d {
+	case 9:
+		fmt.Println("d = 9")
+		fallthrough
+	case 6, 5, 4:
+		fmt.Println("fallthrough")
+	}
+}
+
+func switchConditionAfter(x int) {
+	switch {
+	case x > 9:
+		fmt.Println("x > 9")
+		fallthrough
+	case x < 6:
+		fmt.Println("x < 6")
+	}
+}
+
+/*
+Таблица истинности для &&:
+true && true = true
+true && false = false
+false && true = false
+false && false = false
+*/
+
+/*
+Таблица истинности для ||:
+true || true = true
+true || false = true
+false || true = true
+false || false = false
+*/
+
+/*
+Отрицание !
+!true = false
+!false = true
+*/
