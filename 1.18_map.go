@@ -51,6 +51,7 @@ func mapOne() {
 
 	/*
 		Для перебора элементов применяется цикл for:
+		Важно, при каждом запуске элементы будут находится в рандомном порядке
 	*/
 	for key, value := range people {
 		fmt.Println(key, value)
@@ -77,6 +78,30 @@ func mapOne() {
 	delete(people, "Bob")
 	fmt.Println(people)
 }
+
+/*
+Ещё способы создания map
+
+// default value
+	var defaultMap map[int64]string
+
+// slice by make
+	mapByMake := make(map[string]string)
+	fmt.Printf("Type: %T Value: %#v\n\n", mapByMake, mapByMake)
+
+// slice by make with cap (указываем количество элементов для экономии памяти)
+	mapByMakeWithCap := make(map[string]string, 3)
+	fmt.Printf("Type: %T Value: %#v\n\n", mapByMakeWithCap, mapByMakeWithCap)
+
+// slice by literal
+	mapByLiteral := map[string]int{"Vasya": 18, "Dima": 20}
+	fmt.Printf("Type: %T Value: %#v\n", mapByLiteral, mapByLiteral)
+	fmt.Printf("Len: %d\n\n", len(mapByLiteral))
+
+// slice by new
+	mapWithNew := *new(map[string]string)
+	fmt.Printf("Type: %T Value: %#v\n\n", mapWithNew, mapWithNew)
+*/
 
 /*
 Проверка наличия элментов в map:
@@ -158,5 +183,84 @@ func MostPopularWord(words []string) string {
 		}
 	}
 	return mostPopWord
+}
+*/
+
+/*
+// unique values (достаём из slice только уникальные значения)
+
+// Предположим есть slice в котором id = 45 повторяется
+	users := []User{
+		{
+			Id:   1,
+			Name: "Vasya",
+		},
+		{
+			Id:   45,
+			Name: "Petya",
+		},
+		{
+			Id:   57,
+			Name: "John",
+		},
+		{
+			Id:   45,
+			Name: "Petya",
+		},
+	}
+
+
+// Создаём map в которую будем складывать ключи id(int64) и значения пустые struct{},
+// Кладём struct{} так как она не занимает места в памяти
+	uniqueUsers := make(map[int64]struct{}, len(users))
+
+	for _, user := range users {
+		// Проверяем есть ли в мапе ключ из slice и если его нет - добавляем ключ, а в качестве значения пустую struct{}
+		if _, ok := uniqueUsers[user.Id]; !ok {
+			uniqueUsers[user.Id] = struct{}{}
+		}
+	}
+	fmt.Printf("Type: %T Value: %#v\n", uniqueUsers, uniqueUsers)
+*/
+
+/*
+Быстрый поиск значения с помощью map
+
+Например нам нужно найти какого-то пользователя по его id.
+Это быстрей, чем функция findInSlice.
+Мы на основе полученного slice создаём map в которую складываем уникальных пользователей
+В итоге есть map из которой по id в функции findInMap мы достаём нужные данные всего за одну операцию, алгоритм O(1)
+
+// find by value
+	usersMap := make(map[int64]User, len(users))
+	for _, user := range users {
+		if _, ok := usersMap[user.Id]; !ok {
+			usersMap[user.Id] = user
+		}
+	}
+
+	fmt.Println(findInSlice(57, users))
+	fmt.Println(findInMap(57, usersMap))
+
+// Поиск в slice
+// Эта функция низко производительная, требуется много итераций
+// Алгоритм O(n) - зависит от количества элементов в slice
+func findInSlice(id int64, users []User) *User {
+	for _, user := range users {
+		if user.Id == id {
+			return &user
+		}
+	}
+
+	return nil
+}
+
+// Поиск в map
+func findInMap(id int64, usersMap map[int64]User) *User {
+	if user, ok := usersMap[id]; ok {
+		return &user
+	}
+
+	return nil
 }
 */

@@ -84,8 +84,16 @@ func deleteSlice() {
 	users := []string{"Bob", "Alice", "Kate", "Sam", "Tom", "Paul", "Mike", "Robert"}
 	//удаляем 4-й элемент
 	var n = 3
-	users = append(users[:n], users[n+1:]...)
-	fmt.Println(users) //["Bob", "Alice", "Kate", "Tom", "Paul", "Mike", "Robert"]
+	users = append(users[:n], users[n+1:]...) // ломает исходный слайс
+	fmt.Println(users)                        //["Bob", "Alice", "Kate", "Tom", "Paul", "Mike", "Robert"]
+
+	// Ещё один способ удаления
+	slice := []int{1, 2, 3, 4, 5}
+	i := 2
+
+	withCopy := slice[:i+copy(slice[i:], slice[i+1:])] // ломает исходный слайс
+	fmt.Printf("Type: %T Value: %#v\n", withCopy, withCopy)
+	fmt.Println(slice)
 }
 
 /*
