@@ -17,7 +17,7 @@ S) Single-responsibility principle /Принцип единственной от
 
 // Допустим, у меня есть структура Employee, которая отслеживает имя, зарплату и адрес сотрудника:
 
-type Employee struct {
+type Employees struct {
 	Name    string
 	Salary  float64
 	Address string
@@ -26,26 +26,26 @@ type Employee struct {
 // Согласно SRP, каждая структура должна иметь только одну обязанность, поэтому в этом случае было бы лучше разделить
 // обязанности структуры Employee на две отдельные структуры: EmployeeInfo и EmployeeAddress.
 
-type EmployeeInfo struct {
+type EmployeesInfo struct {
 	Name   string
 	Salary float64
 }
 
-type EmployeeAddress struct {
+type EmployeesAddress struct {
 	Address string
 }
 
 // Теперь у нас могут быть отдельные функции, которые обрабатывают различные обязанности каждой структуры:
 
-func (e EmployeeInfo) GetName() string {
+func (e EmployeesInfo) GetName() string {
 	return e.Name
 }
 
-func (e EmployeeInfo) GetSalary() float64 {
+func (e EmployeesInfo) GetSalary() float64 {
 	return e.Salary
 }
 
-func (e EmployeeAddress) GetAddress() string {
+func (e EmployeesAddress) GetAddress() string {
 	return e.Address
 }
 
