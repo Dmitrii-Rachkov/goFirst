@@ -85,26 +85,26 @@ func mapOne() {
 // default value
 	var defaultMap map[int64]string
 
-// slice by make
+// map by make
 	mapByMake := make(map[string]string)
 	fmt.Printf("Type: %T Value: %#v\n\n", mapByMake, mapByMake)
 
-// slice by make with cap (указываем количество элементов для экономии памяти)
+// map by make with cap (указываем количество элементов для экономии памяти)
 	mapByMakeWithCap := make(map[string]string, 3)
 	fmt.Printf("Type: %T Value: %#v\n\n", mapByMakeWithCap, mapByMakeWithCap)
 
-// slice by literal
+// map by literal
 	mapByLiteral := map[string]int{"Vasya": 18, "Dima": 20}
 	fmt.Printf("Type: %T Value: %#v\n", mapByLiteral, mapByLiteral)
 	fmt.Printf("Len: %d\n\n", len(mapByLiteral))
 
-// slice by new
+// map by new
 	mapWithNew := *new(map[string]string)
 	fmt.Printf("Type: %T Value: %#v\n\n", mapWithNew, mapWithNew)
 */
 
 /*
-Проверка наличия элментов в map:
+Проверка наличия элементов в map:
 
 При чтении элемента по несуществующему ключу возвращается нулевое значение данного типа.
 Это приводит к ошибкам логики, когда используется bool как значение. Для решения данной проблемы при
@@ -263,4 +263,24 @@ func findInMap(id int64, usersMap map[int64]User) *User {
 
 	return nil
 }
+*/
+
+/*
+Как и срезы, отображения нельзя сравнивать одно с другим; единственным законным сравнением является сравнение со значением nil.
+Чтобы проверить, содержат ли два отображения одни и те же ключи и связанные с ними значения, мы должны написать цикл:
+func equal(x, у map[string]int) bool {
+		if len(x) != len(y) {
+		return false
+	}
+	for k, xv := range x {
+		if уv, ok := y[k]j !ok || yv != xv {
+			return false
+		}
+	}
+	return true
+}
+Обратите внимание, как мы используем ! ok для того, чтобы отличить случаи “отсутствует’ и “присутствует, но равен нулю”.
+Если бы мы наивно написали xv ! = у [к], то показанный ниже вызов сообщил бы, что аргументы равны, хотя это и не так:
+// Истинно при некорректном написании функции.
+equal(map[string]int{"A": 0}, map[string]int{"B": 42})
 */
