@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"sort"
 	"strconv"
 	"strings"
 	"unicode"
@@ -16,7 +18,16 @@ func main() {
 	// fmt.Println(contamination("AsvfDfd", "i"))
 	// fmt.Println(evenOdd(3))
 	// fmt.Println(arrayCSV([][]int{{0, 1, 2, 3, 4}, {10, 11, 12, 13, 14}, {20, 21, 22, 23, 24}, {30, 31, 32, 33, 34}}))
-	fmt.Println(derive(5, 9))
+	// fmt.Println(derive(5, 9))
+	// fmt.Println(zooTails("abs", '\u0073'))
+	// fmt.Println(eachCons([]int{1, 2, 3, 4, 5, 6}, 3))
+	// fmt.Println(reverseNum(0))
+	// fmt.Println(keepHydrated(11.8))
+	// fmt.Println(sortStar([]string{"turns", "out", "random", "test", "cases", "are", "easier", "than", "writing", "out", "basic", "ones"}))
+	// fmt.Println(terminalGame(3, 6))
+	// fmt.Println(leaveTheater(16, 11, 5, 3))
+	// fmt.Println(areaVolume(4, 2, 6))
+	fmt.Println(nearestSquareNumber(10))
 }
 
 /*
@@ -250,4 +261,207 @@ func derive(coefficient, exponent int) string {
 	}
 
 	return result
+}
+
+/*
+Some new animals have arrived at the zoo. The zoo keeper is concerned that perhaps the animals do not have the right tails.
+To help her, you must correct the broken function to make sure that the second argument (tail), is the same as the last
+letter of the first argument (body) - otherwise the tail wouldn't fit!
+
+If the tail is right return true, else return false.
+
+The arguments will always be non empty strings, and normal letters.
+
+best practice
+
+	func CorrectTail(body string, tail rune) bool {
+		return rune(body[len(body)-1]) == tail
+	}
+*/
+func zooTails(body string, tail rune) bool {
+	if body == "" || tail == 0 {
+		return false
+	}
+
+	if rune(body[len(body)-1]) != tail {
+		return false
+	}
+
+	return true
+}
+
+/*
+Create a method each_cons that accepts a list and a number n, and returns cascading subsets of the list of size n,
+like so:
+
+each_cons([1,2,3,4], 2)
+  #=> [[1,2], [2,3], [3,4]]
+
+each_cons([1,2,3,4], 3)
+  #=> [[1,2,3], [2,3,4]]
+
+As you can see, the lists are cascading; ie, they overlap, but never out of order.
+*/
+
+func eachCons(array []int, n int) [][]int {
+	var res [][]int
+	for i := 0; i <= len(array)-n; i++ {
+		res = append(res, array[i:i+n])
+	}
+	return res
+}
+
+/*
+Convert number to reversed array of digits
+Given a random non-negative number, you have to return the digits of this number within an array in reverse order.
+
+35231 => [1,3,2,5,3]
+0 => [0]
+*/
+func reverseNum(number int) []int {
+	if number == 0 {
+		return []int{0}
+	}
+
+	result := make([]int, 0, len(strconv.Itoa(number)))
+	for number > 0 {
+		digit := number % 10
+		number = number / 10
+		result = append(result, digit)
+	}
+	return result
+}
+
+/*
+Nathan loves cycling.
+
+Because Nathan knows it is important to stay hydrated, he drinks 0.5 litres of water per hour of cycling.
+You get given the time in hours and you need to return the number of litres Nathan will drink, rounded
+to the smallest value.
+
+For example:
+time = 3 ----> litres = 1
+time = 6.7---> litres = 3
+time = 11.8--> litres = 5
+*/
+func keepHydrated(time float64) int {
+	if time <= 0 {
+		return 0
+	}
+
+	return int(time * 0.5)
+}
+
+/*
+You will be given a list of strings. You must sort it alphabetically (case-sensitive, and based on the ASCII values of the chars)
+and then return the first value.
+The returned value must be a string, and have "***" between each of its letters.
+You should not remove or add elements from/to the array.
+
+best practice
+
+	func TwoSort(arr []string) string {
+		sort.Strings(arr)
+		chars := strings.Split(arr[0], "")
+		return strings.Join(chars, "***")
+	}
+*/
+func sortStar(array []string) string {
+	var result string
+	if len(array) == 0 {
+		return result
+	} else {
+		sort.Strings(array)
+		count := 0
+		for _, v := range array[0] {
+			if count == 0 {
+				s := string(v)
+				result += s
+			} else {
+				result += "***" + string(v)
+			}
+			count++
+		}
+	}
+	return result
+}
+
+/*
+Terminal game move function
+In this game, the hero moves from left to right. The player rolls the dice and moves the number of spaces
+indicated by the dice two times.
+
+Create a function for the terminal game that takes the current position of the hero and the roll (1-6)
+and return the new position.
+
+Example
+move(3, 6) should equal 15
+*/
+func terminalGame(position, roll int) int {
+	return roll*2 + position
+}
+
+/*
+Your friend advised you to see a new performance in the most popular theater in the city.
+He knows a lot about art and his advice is usually good, but not this time: the performance turned out
+to be awfully dull. It's so bad you want to sneak out, which is quite simple, especially since the exit is
+located right behind your row to the left. All you need to do is climb over your seat and make your way to
+the exit.
+
+The main problem is your shyness: you're afraid that you'll end up blocking the view (even if only for a couple
+of seconds) of all the people who sit behind you and in your column or the columns to your left. To gain some
+courage, you decide to calculate the number of such people and see if you can possibly make it to the exit
+without disturbing too many people.
+
+Given the total number of rows and columns in the theater (nRows and nCols, respectively), and the row and
+column you're sitting in, return the number of people who sit strictly behind you and in your column or to the
+left, assuming all seats are occupied.
+
+For nCols = 16, nRows = 11, col = 5 and row = 3, the output should be 96.
+
+Input/Output
+[input] integer nCols
+An integer, the number of theater's columns.
+Constraints: 1 ≤ nCols ≤ 1000.
+
+[input] integer nRows
+An integer, the number of theater's rows.
+Constraints: 1 ≤ nRows ≤ 1000.
+
+[input] integer col
+An integer, the column number of your own seat (with the rightmost column having index 1).
+Constraints: 1 ≤ col ≤ nCols.
+
+[input] integer row
+An integer, the row number of your own seat (with the front row having index 1).
+Constraints: 1 ≤ row ≤ nRows.
+
+[output] an integer
+The number of people who sit strictly behind you and in your column or to the left.
+*/
+func leaveTheater(nCols, nRows, col, row int) int {
+	return (nCols - col + 1) * (nRows - row)
+}
+
+/*
+Write a function that returns the total surface area and volume of a box as an array: [area, volume]
+*/
+func areaVolume(w, h, d int) [2]int {
+	s := 2 * (w*h + w*d + h*d)
+	v := w * h * d
+	return [2]int{s, v}
+}
+
+/*
+Your task is to find the nearest square number of a positive integer n. In mathematics, a square number or perfect square
+is an integer that is the square of an integer; in other words, it is the product of some integer with itself.
+
+For example, if n = 111, then the nearest square number equals 121, since 111 is closer to 121, the square of 11,
+than 100, the square of 10.
+
+If n is already a perfect square (e.g. n = 144, n = 81, etc.), you need to just return n.
+*/
+func nearestSquareNumber(n int) int {
+	n = int(math.Round(math.Sqrt(float64(n))))
+	return n * n
 }
