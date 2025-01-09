@@ -27,7 +27,10 @@ func main() {
 	// fmt.Println(terminalGame(3, 6))
 	// fmt.Println(leaveTheater(16, 11, 5, 3))
 	// fmt.Println(areaVolume(4, 2, 6))
-	fmt.Println(nearestSquareNumber(10))
+	// fmt.Println(nearestSquareNumber(10))
+	// fmt.Println(removeStringSpaces("8 j 8   mBliB8g  imjB8B8  jl  B"))
+	// fmt.Println(replaceDots("one.two.three"))
+	fmt.Println(binToDec("1001001"))
 }
 
 /*
@@ -464,4 +467,42 @@ If n is already a perfect square (e.g. n = 144, n = 81, etc.), you need to just 
 func nearestSquareNumber(n int) int {
 	n = int(math.Round(math.Sqrt(float64(n))))
 	return n * n
+}
+
+/*
+Write a function that removes the spaces from the string, then return the resultant string.
+
+Examples (Input -> Output):
+"8 j 8   mBliB8g  imjB8B8  jl  B" -> "8j8mBliB8gimjB8B8jlB"
+"8 8 Bi fk8h B 8 BB8B B B  B888 c hl8 BhB fd" -> "88Bifk8hB8BB8BBBB888chl8BhBfd"
+"8aaaaa dddd r     " -> "8aaaaaddddr"
+*/
+func removeStringSpaces(str string) string {
+	return strings.Replace(str, " ", "", -1)
+}
+
+/*
+The code provided is supposed replace all the dots . in the specified String str with dashes -
+But it's not working properly.
+
+Task
+Fix the bug so we can all go home early.
+
+Notes
+String str will never be null.
+*/
+func replaceDots(str string) string {
+	return strings.ReplaceAll(str, ".", "-")
+}
+
+/*
+Complete the function which converts a binary number (given as a string) to a decimal number.
+Expect(BinToDec("10")).To(Equal(2))
+Expect(BinToDec("11")).To(Equal(3))
+Expect(BinToDec("101010")).To(Equal(42))
+Expect(BinToDec("1001001")).To(Equal(73))
+*/
+func binToDec(bin string) int {
+	res, _ := strconv.ParseInt(bin, 2, 64)
+	return int(res)
 }
