@@ -30,7 +30,9 @@ func main() {
 	// fmt.Println(nearestSquareNumber(10))
 	// fmt.Println(removeStringSpaces("8 j 8   mBliB8g  imjB8B8  jl  B"))
 	// fmt.Println(replaceDots("one.two.three"))
-	fmt.Println(binToDec("1001001"))
+	// fmt.Println(binToDec("1001001"))
+	// fmt.Println(centuryFromYear(2742))
+	fmt.Println(countOddBelowN(7))
 }
 
 /*
@@ -505,4 +507,47 @@ Expect(BinToDec("1001001")).To(Equal(73))
 func binToDec(bin string) int {
 	res, _ := strconv.ParseInt(bin, 2, 64)
 	return int(res)
+}
+
+/*
+Century From Year
+
+The first century spans from the year 1 up to and including the year 100,
+the second century - from the year 101 up to and including the year 200, etc.
+Given a year, return the century it is in.
+
+1705 --> 18
+1900 --> 19
+1601 --> 17
+2000 --> 20
+2742 --> 28
+
+best practice
+
+	func century(year int) int {
+		return (year + 99)/100
+	}
+*/
+func centuryFromYear(year int) int {
+	if year == 0 {
+		return 1
+	}
+
+	if year%100 == 0 {
+		return year / 100
+	} else {
+		return year/100 + 1
+	}
+}
+
+/*
+Count Odd Numbers below n
+Given a number n, return the number of positive odd numbers below n, EASY!
+
+7  -> 3 (because odd numbers below 7 are [1, 3, 5])
+15 -> 7 (because odd numbers below 15 are [1, 3, 5, 7, 9, 11, 13])
+Expect large Inputs!
+*/
+func countOddBelowN(n int) int {
+	return n / 2
 }
