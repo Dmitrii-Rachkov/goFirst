@@ -32,7 +32,8 @@ func main() {
 	// fmt.Println(replaceDots("one.two.three"))
 	// fmt.Println(binToDec("1001001"))
 	// fmt.Println(centuryFromYear(2742))
-	fmt.Println(countOddBelowN(7))
+	// fmt.Println(countOddBelowN(7))
+	fmt.Println(squareOrNot([]int{4, 3, 9, 7, 2, 1}))
 }
 
 /*
@@ -550,4 +551,39 @@ Expect large Inputs!
 */
 func countOddBelowN(n int) int {
 	return n / 2
+}
+
+/*
+Write a method, that will get an integer array as parameter and will process every number from this array.
+Return a new array with processing every number of the input-array like this:
+If the number has an integer square root, take this, otherwise square the number.
+
+[4,3,9,7,2,1] -> [2,9,3,49,4,1]
+The input array will always contain only positive numbers, and will never be empty or null.
+
+best
+
+	func SquareOrSquareRoot(arr []int) []int {
+		ret := []int{}
+		for _, n := range arr {
+			i, f := math.Modf(math.Sqrt(float64(n)))
+			if f == 0 {
+				ret = append(ret, int(i))
+			} else {
+				ret = append(ret, n*n)
+			}
+		}
+		return ret
+	}
+*/
+func squareOrNot(arr []int) []int {
+	result := make([]int, 0)
+	for _, v := range arr {
+		if num := math.Sqrt(float64(v)); num == float64(int(num)) {
+			result = append(result, int(num))
+		} else {
+			result = append(result, v*v)
+		}
+	}
+	return result
 }
