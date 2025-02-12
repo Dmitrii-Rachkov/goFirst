@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"math/rand"
 	"sort"
 	"strconv"
 	"strings"
@@ -33,7 +34,8 @@ func main() {
 	// fmt.Println(binToDec("1001001"))
 	// fmt.Println(centuryFromYear(2742))
 	// fmt.Println(countOddBelowN(7))
-	fmt.Println(squareOrNot([]int{4, 3, 9, 7, 2, 1}))
+	// fmt.Println(squareOrNot([]int{4, 3, 9, 7, 2, 1}))
+	fmt.Println(getMatrix(9))
 }
 
 /*
@@ -586,4 +588,100 @@ func squareOrNot(arr []int) []int {
 		}
 	}
 	return result
+}
+
+/*
+// GetUniqInt64sStableFront Возвращает набор уникальных чисел, сохраняя порядок первых встреченных значений
+func GetUniqInt64sStableFront(in []int64) []int64 {
+	uniqMap := make(map[int64]struct{}, len(in))
+
+	res := make([]int64, 0, len(in))
+
+	for _, num := range in {
+		_, ok := uniqMap[num]
+		// Если элемент уже был обработан - пропускаем
+		if ok {
+			continue
+		}
+
+		uniqMap[num] = struct{}{}
+
+		res = append(res, num)
+	}
+
+	return res
+}
+*/
+
+/*
+Пример работы с пакетом reflect
+func convertToArray(row reportModel.Row) []string {
+	v := reflect.ValueOf(row)
+	t := reflect.TypeOf(row)
+	values := make([]string, 0, v.NumField())
+	hyperLink := false
+	titleIndex := 0
+
+	for i := 0; i < v.NumField(); i++ {
+		if v.Field(i).Kind() == reflect.Slice {
+			continue
+		}
+		if v.Field(i).Kind() != reflect.String {
+			continue
+		}
+		// if has hyperlink, skip link
+		if t.Field(i).Name == "HyperLink" && v.Field(i).String() != "" {
+			hyperLink = true
+			continue
+		}
+		fieldValue := fmt.Sprint(v.Field(i).Interface())
+		if len(fieldValue) > 0 {
+			values = append(values, fieldValue)
+			if t.Field(i).Name == "Title" {
+				titleIndex = len(values) - 1
+			}
+		}
+	}
+
+	// if has hyperlink, skip title
+	if hyperLink {
+		values = slices.Delete(values, titleIndex, titleIndex+1)
+	}
+
+	return values
+}
+*/
+
+/*
+Написать функцию, которая вернет матрицу 3х3, заполненную уникальными случайными числами от 1 до N.
+Signature функции: func getMatrix() [][]int {}
+Пример матрицы если N=20:
+    [ [ 4,  7,  13 ],
+      [ 14, 3,  6  ],
+      [ 1,  18, 10 ] ]
+*/
+
+func getMatrix(n int) [][]int {
+	if n < 9 {
+		return [][]int{}
+	}
+
+	uniqueNumbers := make(map[int]struct{})
+	var numbers []int
+
+	for len(numbers) < n {
+		num := rand.Intn(n) + 1
+
+		if _, exists := uniqueNumbers[num]; !exists {
+			uniqueNumbers[num] = struct{}{}
+			numbers = append(numbers, num)
+		}
+	}
+
+	matrix := make([][]int, 3)
+	for i := 0; i < 3; i++ {
+		matrix[i] = numbers[i*3 : (i+1)*3]
+	}
+
+	return matrix
 }
