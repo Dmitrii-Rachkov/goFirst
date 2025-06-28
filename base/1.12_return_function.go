@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 /*
 Возвращение результата из функции
@@ -80,4 +82,10 @@ func returnMany(x, y int, firstName, lastName string) (z int, fullName string) {
     fullName = firstName + " " + lastName
     return
 }
+*/
+
+/*
+v, ok = m[key] // Поиск в отображении
+v, ok = х.(Т) // Утверждение о типе
+v, ok = <-ch // Получение из канала
 */

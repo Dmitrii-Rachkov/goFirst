@@ -35,7 +35,8 @@ func main() {
 	// fmt.Println(centuryFromYear(2742))
 	// fmt.Println(countOddBelowN(7))
 	// fmt.Println(squareOrNot([]int{4, 3, 9, 7, 2, 1}))
-	fmt.Println(getMatrix(9))
+	// fmt.Println(getMatrix(9))
+	fmt.Println(fib(5))
 }
 
 /*
@@ -684,4 +685,15 @@ func getMatrix(n int) [][]int {
 	}
 
 	return matrix
+}
+
+// Fibonacci
+func fib(n int) []int {
+	res := make([]int, 0, n+1)
+	x, y := 0, 1
+	for i := 0; i < n; i++ {
+		x, y = y, x+y
+		res = append(res, y)
+	}
+	return res
 }
