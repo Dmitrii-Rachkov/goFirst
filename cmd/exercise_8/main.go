@@ -36,7 +36,7 @@ func main() {
 	// fmt.Println(countOddBelowN(7))
 	// fmt.Println(squareOrNot([]int{4, 3, 9, 7, 2, 1}))
 	// fmt.Println(getMatrix(9))
-	fmt.Println(fib(5))
+	// fmt.Println(fib(5))
 }
 
 /*
