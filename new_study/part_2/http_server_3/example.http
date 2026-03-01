@@ -1,0 +1,17 @@
+###
+GET http://localhost:9093/pay
+Content-Type: application/json
+
+{
+  "description": "iPhone",
+  "amount": 1001,
+  "full_name": "Стив Джобс",
+  "address": "Cupertino"
+}
+
+###
+
+GET http://localhost:9093/params?key=new&value=123
+Content-Type: application/json
+
+###

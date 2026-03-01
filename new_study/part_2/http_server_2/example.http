@@ -1,0 +1,18 @@
+### GET request to example server
+GET http://localhost:9092/pay
+Content-Type: text/plain
+
+100
+
+###
+
+###
+GET http://localhost:9092/save
+Content-Type: text/plain
+
+100
+
+###
+
+
+

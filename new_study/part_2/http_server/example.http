@@ -1,0 +1,14 @@
+### GET request to example server
+GET http://localhost:9091/default
+
+###
+
+###
+GET http://localhost:9091/pay
+
+###
+
+###
+GET http://localhost:9091/cancel
+
+###
