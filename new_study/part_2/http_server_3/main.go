@@ -10,7 +10,7 @@ import (
 type Payment struct {
 	// Описание покупки
 	Description string `json:"description"`
-	// Сумма покупки
+	// Сумма покупки USD
 	Amount int `json:"amount"`
 	// ФИО человека, совершающего покупку
 	FullName string `json:"full_name"`
